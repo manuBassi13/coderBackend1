@@ -20,7 +20,6 @@ router.post('/', async (req, res) => {
 //DONE
 //Obtener carritos
 router.get('/', async (req, res) => {
-    console.log(req.query);
     const carts = await cartManager.getCarts();
     res.status(201).json({
         payload: [...carts],
@@ -59,8 +58,6 @@ router.post('/:cid/product/:pid', async (req, res) => {
         })
     }
     
-
-
 })
 
 export default router

@@ -1,10 +1,9 @@
 import { Router } from "express"
-import { buscarProductosDB, buscarCarritosDB } from "../utils.js"
 import ProductManager from "../Class/productManager.js"
 import { __dirname } from "../utils.js"
 
 
-const productManager = new ProductManager(__dirname + '/db/productList.json')
+const productManager = new ProductManager(__dirname + '/db/products.json')
 
 const router = Router()
 
@@ -13,8 +12,7 @@ const router = Router()
 router.get('/', async (req, res) => {
     const productList = await productManager.getProductList()
     res.status(200).json({
-        payload: [...productList],
-        message: "Ok products"
+        payload: [...productList]
     })
 })
 
@@ -25,10 +23,11 @@ router.get('/:pid', async (req, res, next) => {
     const productFinded = await productManager.getProductById(pid)
     productFinded ? 
         res.status(200).json({
+            message: "Producto encontrado!",
             payload: productFinded
         }) :
         res.status(400).json({
-            mensaje: "Producto con id {"+pid+"} no encontrado."
+            mensaje: "Producto con no encontrado."
         })
 })
 
@@ -36,12 +35,12 @@ router.get('/:pid', async (req, res, next) => {
 //Agregar producto (id, title, description, code, price, status, stock, category, thumbnails)
 router.post('/', async (req, res) => {
     const product = req.body
-    //Validar body ok
+    //Validar body
     await productManager.addProduct(product)
     
     res.status(201).json({
-        payload: product,
-        mensaje: "Producto agregado con éxito!"
+        mensaje: "Producto agregado con éxito!",
+        payload: product
     })
 })
 
@@ -50,7 +49,7 @@ router.post('/', async (req, res) => {
 router.put('/:pid', async (req, res) => {
     const { pid } = req.params
     const newData = req.body
-    //Validar body ok
+    //Validar body
     const prodFinded = await productManager.getProductById(pid)
     if (prodFinded){
         await productManager.updateProductById(pid, newData)
@@ -60,7 +59,6 @@ router.put('/:pid', async (req, res) => {
     } else res.status(400).json({
         message: "Producto no encontrado"
     })
-   
 })
 
 //DONE
@@ -78,8 +76,6 @@ router.delete('/:pid', async (req, res) => {
             message: "Producto no encontrado"
         })  
 })
-
-
 
 
 export default router
