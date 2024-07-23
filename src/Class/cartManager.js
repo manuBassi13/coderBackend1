@@ -33,7 +33,6 @@ class CartManager {
         await this.getCarts()
         //Validar products
         const id = this.carts[this.carts.length-1].id +1
-        console.log(...products);
         this.carts.push({
             id,
             products: [...products]
@@ -45,20 +44,17 @@ class CartManager {
         this.carts = await this.getCarts()
         const cartsUpdated = this.carts.map((cart) => {
             //Si no es el carrito que busco, lo retorna y sigue con el siguiente
-            console.log(cart);
             if(cart.id != cid) return cart
 
             const indexProd = cart.products.findIndex(prod => prod.id == pid)
             if(indexProd == -1){
                 cart.products.push({id: pid, quantity: 1})
-                console.log("Acá?");
                 return cart
             }
             cart.products[indexProd] = {...cart.products[indexProd], quantity: cart.products[indexProd].quantity + 1}
             return cart
         })
         this.carts = [...cartsUpdated]
-        console.log(this.carts[2]);
         await fs.promises.writeFile(this.path, JSON.stringify({ data: this.carts}))
     }
 

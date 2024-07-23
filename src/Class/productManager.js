@@ -35,12 +35,15 @@ class ProductManager {
     async updateProductById(pid, newData){
         await this.getProductList()
 
-        //({title, description, code, price, status, stock, category, thumbnails} = newData)
         const productListUpdated = this.productList.map((prod) => {
-            //console.log(newData);
             if(prod.id != pid) return prod
             else {
-                prod = {...newData, id: prod.id}
+                prod = {
+                    //Para pisar sólo los datos modificados y mantener el id
+                    ...prod,
+                    ...newData,
+                    id: prod.id
+                }
                 return prod
             }
         })
