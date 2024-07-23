@@ -12,6 +12,7 @@ app.use(express.json()) //Para reconocer JSON en el body
 app.use(express.urlencoded({extended: true}))   //Para recibir y comprender formularios
 app.use(express.static(__dirname + '/public'))  //Carpeta public como estática
 
+
 app.use('/api/products', ProductRoute)
 
 app.use('/api/carts', CartRoute)

@@ -1,95 +1,82 @@
 import { Router } from "express"
 import { buscarProductosDB, buscarCarritosDB } from "../utils.js"
+import ProductManager from "../Class/productManager.js"
+import { __dirname } from "../utils.js"
 
-const listaCarritos = JSON.parse(await buscarCarritosDB())
-let listaProductos =  JSON.parse(await buscarProductosDB())
-let id = 0
+
+const productManager = new ProductManager(__dirname + '/db/productList.json')
+
 const router = Router()
 
+//DONE
 //Obtener todos los productos (incluir ?limit)
-router.get('/', (req, res) => {
-    const { limit } = req.query
-    //console.log(limit)
-    // if((limit > 0) && (limit<= listaProductos.lenght)){
-    //     console.log(listaProductos[0]);
-    //     for(let i=0; i++; i<limit){
-    //         console.log(listaProductos[i]);
-    //         //listaProductosFiltrada.push(listaProductos[i])
-    //     }
-    // }
+router.get('/', async (req, res) => {
+    const productList = await productManager.getProductList()
     res.status(200).json({
-        payload: [...listaProductos],
+        payload: [...productList],
         message: "Ok products"
     })
 })
 
+//DONE
 //Obtener producto pid
-router.get('/:pid', (req, res, next) => {
-    const prodId = req.params.pid
-    const producto = listaProductos.find(producto => producto.id == prodId)
-    producto ? 
+router.get('/:pid', async (req, res, next) => {
+    const { pid } = req.params
+    const productFinded = await productManager.getProductById(pid)
+    productFinded ? 
         res.status(200).json({
-            ...producto
+            payload: productFinded
         }) :
         res.status(400).json({
-            mensaje: "Producto con id {"+prodId+"} no encontrado."
+            mensaje: "Producto con id {"+pid+"} no encontrado."
         })
 })
 
+//DONE
 //Agregar producto (id, title, description, code, price, status, stock, category, thumbnails)
-router.post('/', (req, res) => {
-    const producto = req.body
+router.post('/', async (req, res) => {
+    const product = req.body
     //Validar body ok
+    await productManager.addProduct(product)
     
-    console.log(producto)
-    id = id + 1
-    listaProductos.push({
-        ...producto,
-        id
-    })
-    res.status(202).json({
-        payload: producto,
+    res.status(201).json({
+        payload: product,
         mensaje: "Producto agregado con éxito!"
     })
 })
 
+//DONE
 //Actualizar producto pid (nunca actualizar o eliminar el id)
-router.put('/:pid', (req, res) => {
-    const prodId = req.params.pid
-    const nuevosDatos = req.body
+router.put('/:pid', async (req, res) => {
+    const { pid } = req.params
+    const newData = req.body
     //Validar body ok
-
-    const prodIndex = listaProductos.findIndex(producto => producto.id == prodId)
-    if (prodIndex >= 0){
-        listaProductos[prodIndex] = nuevosDatos
-        res.status(204).json({
-
-            mensaje: "Producto modificado con éxito"
-        })  
-    }else{
-        res.status(400).json({
-            mensaje: "Producto con id {"+prodId+"} no encontrado."
+    const prodFinded = await productManager.getProductById(pid)
+    if (prodFinded){
+        await productManager.updateProductById(pid, newData)
+        res.status(200).json({
+            message: "Producto modificado con éxito"
         })
-    }
+    } else res.status(400).json({
+        message: "Producto no encontrado"
+    })
    
 })
 
+//DONE
 //Eliminar producto pid
-router.delete('/:pid', (req, res, next) => {
-    const prodId = req.params.pid
-    if (listaProductos.some(producto => producto.id == prodId)){
-        const listaProductosFiltrada = listaProductos.filter(producto => producto.id != prodId)
-        listaProductos = [...listaProductosFiltrada]
-        next()
-    }else{
-        res.status(400).json({
-            mensaje: "Producto con id {"+prodId+"} no encontrado."
+router.delete('/:pid', async (req, res) => {
+    const {pid} = req.params
+    const prodFinded = await productManager.getProductById(pid)
+    if (prodFinded){
+        await productManager.deleteProductById(pid)
+        res.status(200).json({
+            message: "Producto eliminado con éxito"
         })
-    }
-}, (req,res)=>{
-    res.json({
-        mensaje: "Producto eliminado con éxito"
-    })
+    } else
+        res.status(400).json({
+            message: "Producto no encontrado"
+        })  
 })
 
 
