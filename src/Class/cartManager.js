@@ -1,3 +1,4 @@
+import { log } from "node:console";
 import fs from "node:fs"
 
 class CartManager {
@@ -14,30 +15,36 @@ class CartManager {
     }
 
     async getCarts(){
-        const listCarts = await fs.promises.readFile(this.path, 'utf-8', (err, data) => {
-            if (err) {
-                if (err.code === 'ENOENT'){
-                    console.error('File not found: ',err.path);
-                } else {
-                    console.error('Error reading file: ', err);
-                }
-                return
+        try{
+            const listCarts = await fs.promises.readFile(this.path, 'utf-8')  
+            console.log(listCarts);
+            this.carts = [...JSON.parse(listCarts).data] 
+        } catch(err){
+            if (err.code === 'ENOENT'){
+                console.error('File not found: ',err.path);
+            } else {
+                console.error('Error reading file: ', err);
             }
-            console.log('File Content: ', data);
-        })
-        this.carts = [...JSON.parse(listCarts).data]
+        }
         return [...this.carts]
     }
 
     async createCart(products){
         await this.getCarts()
+        console.log("Carrito: ",this.carts);
+        let id = 1
         //Validar products
-        const id = this.carts[this.carts.length-1].id +1
+        this.carts.length != 0 ? id = this.carts[this.carts.length-1].id +1 : id
+            
+        //(carrito != []) ? (id = this.carts[this.carts.length-1].id +1) : (id = 1) // Valido que exista el carrito para tomar el último id y sumarle 1, si no existen carritos -> id=1
+        
         this.carts.push({
-            id,
-            products: [...products]
-        })
-        await fs.promises.writeFile(this.path, JSON.stringify({ data: this.carts}))
+                id,
+                products: [...products]
+            })
+
+            await fs.promises.writeFile(this.path, JSON.stringify({ data: this.carts}))
+        
     }
 
     async addProductToCart(cid, pid){

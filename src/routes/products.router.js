@@ -11,8 +11,13 @@ const router = Router()
 //Obtener todos los productos (incluir ?limit)
 router.get('/', async (req, res) => {
     const productList = await productManager.getProductList()
+    console.log(productList);
+    productList.length != 0 ?
     res.status(200).json({
         payload: [...productList]
+    }) :
+    res.status(400).json({
+        message: "No existen productos"
     })
 })
 
@@ -27,7 +32,7 @@ router.get('/:pid', async (req, res, next) => {
             payload: productFinded
         }) :
         res.status(400).json({
-            mensaje: "Producto con no encontrado."
+            mensaje: "Producto no encontrado."
         })
 })
 
