@@ -14,11 +14,14 @@ class ProductManager {
     }
 
     async getProductList(){
-        const list = await fs.promises.readFile(this.path, 'utf-8', (err, data) => {
-            if (err) console.log("No existe el archivo")
-            else console.log("Archivo OK")
-        })
-        this.productList = [...JSON.parse(list).data]
+        try{
+            const list = await fs.promises.readFile(this.path, 'utf-8')
+            this.productList = [...JSON.parse(list).data]
+        } catch (err){
+            (err.code === 'ENOENT') ?
+                console.error('File not found: ',err.path) :
+                console.error('Error reading file: ', err)
+        }
         return [...this.productList]
     }
 
