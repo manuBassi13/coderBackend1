@@ -37,7 +37,6 @@ class ProductManager {
 
         //({title, description, code, price, status, stock, category, thumbnails} = newData)
         const productListUpdated = this.productList.map((prod) => {
-            //console.log(newData);
             if(prod.id != pid) return prod
             else {
                 prod = {...newData, id: prod.id}

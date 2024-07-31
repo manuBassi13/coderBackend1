@@ -1,10 +1,9 @@
 import { Router } from "express"
-import { buscarProductosDB, buscarCarritosDB } from "../utils.js"
 import ProductManager from "../Class/productManager.js"
 import { __dirname } from "../utils.js"
 
 
-const productManager = new ProductManager(__dirname + '/db/productList.json')
+const productManager = new ProductManager(__dirname + '/db/products.json')
 
 const router = Router()
 
@@ -12,6 +11,7 @@ const router = Router()
 //Obtener todos los productos (incluir ?limit)
 router.get('/', async (req, res) => {
     const productList = await productManager.getProductList()
+    //console.log(productList);
     res.status(200).json({
         payload: [...productList],
         message: "Ok products"
