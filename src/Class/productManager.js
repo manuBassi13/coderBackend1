@@ -14,11 +14,14 @@ class ProductManager {
     }
 
     async getProductList(){
-        const list = await fs.promises.readFile(this.path, 'utf-8', (err, data) => {
-            if (err) console.error("Error al leer el archivo", err)
-            else console.log("Archivo OK")
-        })
-        this.productList = [...JSON.parse(list).data]
+        try{
+            const list = await fs.promises.readFile(this.path, 'utf-8')
+            this.productList = [...JSON.parse(list).data]
+        } catch (err){
+            (err.code === 'ENOENT') ?
+                console.error('File not found: ',err.path) :
+                console.error('Error reading file: ', err)
+        }
         return [...this.productList]
     }
 
@@ -37,7 +40,12 @@ class ProductManager {
         const productListUpdated = this.productList.map((prod) => {
             if(prod.id != pid) return prod
             else {
-                prod = {...newData, id: prod.id}
+                prod = {
+                    //Para pisar sólo los datos modificados y mantener el id
+                    ...prod,
+                    ...newData,
+                    id: prod.id
+                }
                 return prod
             }
         })

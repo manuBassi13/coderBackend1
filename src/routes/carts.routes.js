@@ -18,9 +18,13 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     const carts = await cartManager.getCarts();
+    carts.length != 0 ?
     res.status(201).json({
         payload: [...carts],
         message: "Ok carts"
+    }) :
+    res.status(200).json({
+        message: "No existen carritos"
     })
 })
 
@@ -53,8 +57,6 @@ router.post('/:cid/product/:pid', async (req, res) => {
         })
     }
     
-
-
 })
 
 export default router

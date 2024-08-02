@@ -1,1 +1,37 @@
-{"data":[]}
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Producto1",
+      "description": "Descripcion Producto1",
+      "code": "prod_001",
+      "price": 5500,
+      "status": true,
+      "stock": 20,
+      "category": "CategoriaProd1",
+      "thumbnails": "img-path"
+    },
+    {
+      "id": 2,
+      "title": "Producto2",
+      "description": "Descripcion Producto2",
+      "code": "prod_002",
+      "price": 50000,
+      "status": true,
+      "stock": 2000,
+      "category": "Categoria Modificada again",
+      "thumbnails": "img-path2"
+    },
+    {
+      "id": 1,
+      "title": "ProductoXX",
+      "description": "Descripcion ProductoXX",
+      "code": "prod_00XX",
+      "price": 5500,
+      "status": true,
+      "stock": 20,
+      "category": "CategoriaProdXX",
+      "thumbnails": "img-path-xX"
+    }
+  ]
+}

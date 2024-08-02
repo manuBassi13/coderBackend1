@@ -8,25 +8,3 @@ const __filename = fileURLToPath(import.meta.url)
 //Ruta Absoluta de /src
 export const __dirname = dirname(__filename)
 
-
-
-export async function buscarProductosDB(){
-    try{
-        const listaProductos = await fs.promises.readFile(__dirname+'/db/products.json', 'utf-8') 
-        return listaProductos
-    }catch(e){
-        console.error("Falla al retornar productos.", e)
-    }   
-}
-
-export async function buscarCarritosDB(){
-    try{
-        const listaCarritos = await fs.promises.readFile(__dirname+'/db/carts.json', 'utf-8') 
-        return listaCarritos
-    }catch(e){
-        console.error("Falla al retornar carritos.", e)
-    }
-}
-
-
-//buscarCarritosDB()
