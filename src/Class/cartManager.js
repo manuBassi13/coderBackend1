@@ -17,13 +17,12 @@ class CartManager {
         const listCarts = await fs.promises.readFile(this.path, 'utf-8', (err, data) => {
             if (err) {
                 if (err.code === 'ENOENT'){
-                    console.error('File not found: ',err.path);
+                    console.error('Archivo no encontrado: ',err.path);
                 } else {
-                    console.error('Error reading file: ', err);
+                    console.error('Error al leer el archivo: ', err);
                 }
                 return
             }
-            console.log('File Content: ', data);
         })
         this.carts = [...JSON.parse(listCarts).data]
         return [...this.carts]
@@ -43,7 +42,6 @@ class CartManager {
     async addProductToCart(cid, pid){
         this.carts = await this.getCarts()
         const cartsUpdated = this.carts.map((cart) => {
-            //Si no es el carrito que busco, lo retorna y sigue con el siguiente
             if(cart.id != cid) return cart
 
             const indexProd = cart.products.findIndex(prod => prod.id == pid)

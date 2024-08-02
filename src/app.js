@@ -11,6 +11,8 @@ import { Server } from 'socket.io'
 const app = express()
 const PORT = 8080;
 let listaProductos = []
+//let pid = 0
+export const productManager = new ProductManager(__dirname + '/db/products.json')
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
@@ -24,6 +26,7 @@ app.use(express.static(__dirname + '/public'))  //Carpeta public como estática
 
 
 app.use('/', ViewRoute)
+app.use('/realtimeproducts', ViewRoute)
 app.use('/api/products', ProductRoute)
 app.use('/api/carts', CartRoute)
 
@@ -32,21 +35,32 @@ const httpServer = app.listen(PORT, () => {
     console.log("Servidor listo");
 })
 
-const io = new Server(httpServer)
+export const io = new Server(httpServer)
 
-const productManager = new ProductManager(__dirname + '/db/products.json')
- async function obtenerLista() {
-     listaProductos = await productManager.getProductList()
-     //return [...listaProductos]
-  }
 
-io.on('connection', (socket) => {
-    console.log("Nueva conexión")
+
+io.on('connection', async (socket) => {
+    console.log("Nueva conexión:", socket.id)
     
-    obtenerLista()
-    io.emit('mostrar-productos', listaProductos)    
-    
-   
+    listaProductos = await productManager.getProductList()
+    io.emit('mostrar-productos', listaProductos)
+
+    // socket.on('traer-prod-id', async (pid) => {
+    //     const prod = await productManager.getProductById(pid)
+    //     socket.emit('datos-prod', prod)
+    // })
+
+    socket.on('nuevo-producto', async (nuevoProd) => {
+        await productManager.addProduct(nuevoProd)
+        listaProductos = await productManager.getProductList()
+        io.emit('mostrar-productos', listaProductos)
+    })
+
+    socket.on('eliminar-producto', async (pid) => {
+        await productManager.deleteProductById(pid)
+        listaProductos = await productManager.getProductList()
+        io.emit('mostrar-productos', listaProductos)
+    })
 
 
 })

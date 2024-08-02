@@ -15,7 +15,7 @@ class ProductManager {
 
     async getProductList(){
         const list = await fs.promises.readFile(this.path, 'utf-8', (err, data) => {
-            if (err) console.log("No existe el archivo")
+            if (err) console.error("Error al leer el archivo", err)
             else console.log("Archivo OK")
         })
         this.productList = [...JSON.parse(list).data]
@@ -24,8 +24,7 @@ class ProductManager {
 
     async addProduct(product){
         await this.getProductList()
-
-        this.id = this.id + 1
+        this.id = this.productList[this.productList.length-1].id +1
         this.productList.push({
             id: this.id,
             ...product})
@@ -35,7 +34,6 @@ class ProductManager {
     async updateProductById(pid, newData){
         await this.getProductList()
 
-        //({title, description, code, price, status, stock, category, thumbnails} = newData)
         const productListUpdated = this.productList.map((prod) => {
             if(prod.id != pid) return prod
             else {
@@ -50,7 +48,7 @@ class ProductManager {
     async deleteProductById(pid){
         await this.getProductList()
         const indexProd = this.productList.findIndex(prod => prod.id == pid)
-        this.productList.splice(this.productList[indexProd], 1)
+        this.productList.splice(indexProd, 1)
         await fs.promises.writeFile(this.path, JSON.stringify({data: this.productList}))
     }
 

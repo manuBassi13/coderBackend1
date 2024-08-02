@@ -15,7 +15,7 @@ export async function buscarProductosDB(){
         const listaProductos = await fs.promises.readFile(__dirname+'/db/products.json', 'utf-8') 
         return listaProductos
     }catch(e){
-        console.log("Falla al retornar productos.")
+        console.error("Falla al retornar productos.", e)
     }   
 }
 
@@ -24,7 +24,7 @@ export async function buscarCarritosDB(){
         const listaCarritos = await fs.promises.readFile(__dirname+'/db/carts.json', 'utf-8') 
         return listaCarritos
     }catch(e){
-        console.log("Falla al retornar carritos.")
+        console.error("Falla al retornar carritos.", e)
     }
 }
 
