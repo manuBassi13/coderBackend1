@@ -27,8 +27,7 @@ class ProductManager {
 
     async addProduct(product){
         await this.getProductList()
-
-        this.id = this.id + 1
+        this.id = this.productList[this.productList.length-1].id +1
         this.productList.push({
             id: this.id,
             ...product})
@@ -57,7 +56,7 @@ class ProductManager {
     async deleteProductById(pid){
         await this.getProductList()
         const indexProd = this.productList.findIndex(prod => prod.id == pid)
-        this.productList.splice(this.productList[indexProd], 1)
+        this.productList.splice(indexProd, 1)
         await fs.promises.writeFile(this.path, JSON.stringify({data: this.productList}))
     }
 

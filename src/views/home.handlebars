@@ -1,0 +1,31 @@
+<div>
+    <h1 id="title-welcome">Bienvenido a mi tienda</h1>
+</div>
+
+{{!-- <div id="productos">
+    <ul id="lista-productos"></ul>
+</div> --}}
+
+<div>
+    <table style="border: 1px solid;">
+        <thead>
+            <th>#</th>
+            <th>Stock</th>
+            <th>Producto</th>
+            <th>Precio</th>
+        </thead>
+        <tbody>
+            {{#each listaProductos}}
+                <tr>
+                    <td>{{id}}.</td>
+                    <td>{{stock}}u.</td>
+                    <td>{{title}}</td>
+                    <td>${{price}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="./js/index.js"></script>

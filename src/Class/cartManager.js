@@ -36,8 +36,6 @@ class CartManager {
         //Validar products
         this.carts.length != 0 ? id = this.carts[this.carts.length-1].id +1 : id
             
-        //(carrito != []) ? (id = this.carts[this.carts.length-1].id +1) : (id = 1) // Valido que exista el carrito para tomar el último id y sumarle 1, si no existen carritos -> id=1
-        
         this.carts.push({
                 id,
                 products: [...products]
@@ -50,7 +48,6 @@ class CartManager {
     async addProductToCart(cid, pid){
         this.carts = await this.getCarts()
         const cartsUpdated = this.carts.map((cart) => {
-            //Si no es el carrito que busco, lo retorna y sigue con el siguiente
             if(cart.id != cid) return cart
 
             const indexProd = cart.products.findIndex(prod => prod.id == pid)

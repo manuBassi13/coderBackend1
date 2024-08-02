@@ -1,0 +1,55 @@
+<div>
+    <h1 id="title-welcome">Bienvenido a mi tienda en tiempo real</h1>
+</div>
+
+<div id="productos-treal">
+    <ul id="lista-productos-treal"></ul>
+</div>
+
+<div>
+    <h2>Agregar Producto</h2>
+    <div id="formulario-add">
+        <input type="text" id="add-title" placeholder="Titulo">
+        <input type="text" id="add-description" placeholder="Descripción">
+        <input type="text" id="add-code" placeholder="Código">
+        <input type="number" id="add-price" placeholder="Precio">
+        <input type="boolean" id="add-status" placeholder="Estado">
+        <input type="number" id="add-stock" placeholder="Stock">
+        <input type="text" id="add-category" placeholder="Categoria">
+        <input type="text" id="add-thumbnail" placeholder="Thumbnail">
+        <button id="add-product">Agregar</button>
+    </div>
+</div>
+
+
+<div>
+    <h2>Actualizar Producto</h2>
+    <select name="product" id="update-select">
+        {{#each listaProductos}}
+            <option value="{{id}}">{{title}}</option>
+        {{/each}}
+    </select>
+    <div id="update-prod-items"></div>
+    <input type="text" id="u-title" placeholder="{{title}}">
+    <input type="text" id="u-descriptions" placeholder="{{description}}">
+    <input type="text" id="u-code" placeholder="{{code}}">
+    <input type="text" id="u-price" placeholder="{{price}}">
+    <input type="text" id="u-status" placeholder="{{status}}">
+    <input type="text" id="u-stock" placeholder="{{stock}}">
+    <input type="text" id="u-category" placeholder="{{category}}">
+    <button id="update-product">Actualizar</button>
+</div>
+
+<div>
+    <h2>Eliminar Producto</h2>
+    <select name="product" id="delete-select">
+        {{#each listaProductos}}
+            <option value="{{id}}">{{title}}</option>
+        {{/each}}
+    </select>
+    <button id="delete-product" >Eliminar</button>
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="./js/realTimeProducts.js"></script>
