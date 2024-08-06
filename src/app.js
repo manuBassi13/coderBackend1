@@ -45,13 +45,19 @@ io.on('connection', async (socket) => {
     listaProductos = await productManager.getProductList()
     io.emit('mostrar-productos', listaProductos)
 
-    // socket.on('traer-prod-id', async (pid) => {
-    //     const prod = await productManager.getProductById(pid)
-    //     socket.emit('datos-prod', prod)
-    // })
+    socket.on('traer-prod-id', async (pid) => {
+        const prod = await productManager.getProductById(pid)
+        socket.emit('datos-prod', prod)
+    })
 
     socket.on('nuevo-producto', async (nuevoProd) => {
         await productManager.addProduct(nuevoProd)
+        listaProductos = await productManager.getProductList()
+        io.emit('mostrar-productos', listaProductos)
+    })
+
+    socket.on('actualizar-producto', async (nuevoProd) => {
+        await productManager.updateProductById(nuevoProd.id, nuevoProd)
         listaProductos = await productManager.getProductList()
         io.emit('mostrar-productos', listaProductos)
     })

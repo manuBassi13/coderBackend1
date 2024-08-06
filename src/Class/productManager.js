@@ -27,7 +27,7 @@ class ProductManager {
 
     async addProduct(product){
         await this.getProductList()
-        this.id = this.productList[this.productList.length-1].id +1
+        this.productList.length != 0 ? this.id = this.productList[this.productList.length-1].id +1 : this.id = 1
         this.productList.push({
             id: this.id,
             ...product})

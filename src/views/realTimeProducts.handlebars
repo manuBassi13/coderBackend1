@@ -24,32 +24,24 @@
 
 <div>
     <h2>Actualizar Producto</h2>
-    <select name="product" id="update-select">
-        {{#each listaProductos}}
-            <option value="{{id}}">{{title}}</option>
-        {{/each}}
-    </select>
+    <select name="product" id="update-select"></select>
     <div id="update-prod-items"></div>
-    <input type="text" id="u-title" placeholder="{{title}}">
-    <input type="text" id="u-descriptions" placeholder="{{description}}">
-    <input type="text" id="u-code" placeholder="{{code}}">
-    <input type="text" id="u-price" placeholder="{{price}}">
-    <input type="text" id="u-status" placeholder="{{status}}">
-    <input type="text" id="u-stock" placeholder="{{stock}}">
-    <input type="text" id="u-category" placeholder="{{category}}">
+    <input type="text" id="u-title">
+    <input type="text" id="u-description">
+    <input type="text" id="u-code">
+    <input type="text" id="u-price">
+    <input type="text" id="u-status">
+    <input type="text" id="u-stock">
+    <input type="text" id="u-category">
     <button id="update-product">Actualizar</button>
 </div>
 
 <div>
     <h2>Eliminar Producto</h2>
-    <select name="product" id="delete-select">
-        {{#each listaProductos}}
-            <option value="{{id}}">{{title}}</option>
-        {{/each}}
-    </select>
+    <select name="product" id="delete-select"></select>
     <button id="delete-product" >Eliminar</button>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="./js/realTimeProducts.js"></script>
