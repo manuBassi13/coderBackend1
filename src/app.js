@@ -6,6 +6,7 @@ import { __dirname } from "./utils.js"
 import handlebars from 'express-handlebars'
 import ViewRoute from './routes/views.routes.js'
 import { Server } from 'socket.io'
+import mongoose from "mongoose"
 
 
 const app = express()
@@ -20,9 +21,9 @@ app.set('view engine', 'handlebars')
 
 
 //MIDDLEWARES
-app.use(express.json()) //Para reconocer JSON en el body
-app.use(express.urlencoded({extended: true}))   //Para recibir y comprender formularios
-app.use(express.static(__dirname + '/public'))  //Carpeta public como estática
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(express.static(__dirname + '/public'))
 
 
 app.use('/', ViewRoute)
@@ -33,6 +34,14 @@ app.use('/api/carts', CartRoute)
 
 const httpServer = app.listen(PORT, () => {
     console.log("Servidor listo");
+})
+
+const pw = 'o0dSKPSHEBXOCbsq'
+const conectString = 'mongodb+srv://manuelbassi96:'+pw+'@coderbackend1.r361g.mongodb.net/?retryWrites=true&w=majority&appName=CoderBackend1'
+mongoose.connect(conectString, {dbName: 'CoderBackend1-Carrito'})
+.then(()=>{
+    console.log("Conectado a la Base de Datos");
+    
 })
 
 export const io = new Server(httpServer)
