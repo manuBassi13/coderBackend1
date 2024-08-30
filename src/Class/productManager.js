@@ -1,5 +1,5 @@
-import fs from "node:fs"
 import { ProductModel } from "../models/product.model.js"
+import { paginate } from "mongoose-paginate-v2";
 
 class ProductManager {
     constructor(){
@@ -8,7 +8,8 @@ class ProductManager {
     }
     
     async getProductById(pid){
-        this.product = await ProductModel.findById(pid)
+        //this.product = await ProductModel.findById(pid)
+        this.product = await ProductModel.find({_id: pid}).populate('categories.category') 
         return this.product
     }
 
@@ -19,7 +20,9 @@ class ProductManager {
             if(err.code === 'ENOENT') throw ('File not found: ',err.path);
             else throw ('Error reading file: ', err);
         }
-        return [...this.productList]
+        console.log(this.productList);
+        
+        return this.productList
     }
 
     async addProduct(product){

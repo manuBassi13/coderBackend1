@@ -1,5 +1,7 @@
 import { Router } from "express"
 import ProductManager from "../Class/productManager.js"
+import { ProductModel } from "../models/product.model.js"
+import { paginate } from "mongoose-paginate-v2";
 //import { __dirname } from "../utils.js"
 
 //const productManager = new ProductManager(__dirname + '/db/products.json')
@@ -8,14 +10,38 @@ const router = Router()
 
 
 router.get('/', async (req, res) => {
-    const productList = await productManager.getProductList()
-    productList.length != 0 ?
-    res.status(200).json({
-        payload: [...productList]
-    }) :
-    res.status(400).json({
-        message: "No existen productos"
-    })
+    const { limit = 10, page = 1, sort = '', ...query} = req.query
+    const sortManager = {
+        'asc': 1,
+        'desc': -1
+    }
+    try{
+        const productList = await ProductModel.paginate(
+            {...query},
+            {
+                limit,
+                page,
+                ...(sort && { sort: {price: sortManager[sort]} }),
+                customLabels: { docs: 'payload'}
+            }
+        )
+        productList.length != 0 ?
+        res.status(200).json({
+            status:'success',
+            ...productList
+        }) :
+        res.status(400).json({
+            status: 'error',
+            message: "No existen productos"
+        })      
+    }
+    catch(err){
+        res.status(404).json({
+            status:'error',
+            message: "Error al traer productos. Parámetro inválido."
+        })
+    }
+    
 })
 
 
@@ -51,7 +77,7 @@ router.put('/:pid', async (req, res) => {
     const prodFinded = await productManager.getProductById(pid)
     if (prodFinded){
         const prodUpdated = await productManager.updateProductById(pid, newData)
-        res.status(200).json({
+        res.status(201).json({
             message: "Producto modificado con éxito",
             payload: prodUpdated
         })
@@ -75,6 +101,5 @@ router.delete('/:pid', async (req, res) => {
             message: "Producto no encontrado"
         })  
 })
-
 
 export default router

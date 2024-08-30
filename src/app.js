@@ -5,12 +5,16 @@ import CartRoute from './routes/carts.routes.js'
 import { __dirname } from "./utils.js"
 import handlebars from 'express-handlebars'
 import ViewRoute from './routes/views.routes.js'
+import CategoryRoute from './routes/category.routes.js'
 import { Server } from 'socket.io'
 import mongoose from "mongoose"
-
+import dotenv from "dotenv"
 
 const app = express()
-const PORT = 8080;
+dotenv.config()
+console.log(process.env);
+
+//const PORT = 8080;
 let listaProductos = []
 //let pid = 0
 export const productManager = new ProductManager(__dirname + '/db/products.json')
@@ -30,15 +34,14 @@ app.use('/', ViewRoute)
 app.use('/realtimeproducts', ViewRoute)
 app.use('/api/products', ProductRoute)
 app.use('/api/carts', CartRoute)
+app.use('/api/categories', CategoryRoute)
 
 
-const httpServer = app.listen(PORT, () => {
-    console.log("Servidor listo");
+const httpServer = app.listen(process.env.PORT, () => {
+    console.log(`Server listening on port ${process.env.PORT}`);
 })
 
-const pw = 'o0dSKPSHEBXOCbsq'
-const conectString = 'mongodb+srv://manuelbassi96:'+pw+'@coderbackend1.r361g.mongodb.net/?retryWrites=true&w=majority&appName=CoderBackend1'
-mongoose.connect(conectString, {dbName: 'CoderBackend1-Carrito'})
+mongoose.connect(process.env.DB_URI, {dbName: 'CoderBackend1-Carrito'})
 .then(()=>{
     console.log("Conectado a la Base de Datos");
     
