@@ -5,11 +5,16 @@ import CartRoute from './routes/carts.routes.js'
 import { __dirname } from "./utils.js"
 import handlebars from 'express-handlebars'
 import ViewRoute from './routes/views.routes.js'
+import CategoryRoute from './routes/category.routes.js'
 import { Server } from 'socket.io'
-
+import mongoose from "mongoose"
+import dotenv from "dotenv"
 
 const app = express()
-const PORT = 8080;
+dotenv.config()
+console.log(process.env);
+
+//const PORT = 8080;
 let listaProductos = []
 //let pid = 0
 export const productManager = new ProductManager(__dirname + '/db/products.json')
@@ -20,19 +25,26 @@ app.set('view engine', 'handlebars')
 
 
 //MIDDLEWARES
-app.use(express.json()) //Para reconocer JSON en el body
-app.use(express.urlencoded({extended: true}))   //Para recibir y comprender formularios
-app.use(express.static(__dirname + '/public'))  //Carpeta public como estática
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(express.static(__dirname + '/public'))
 
 
 app.use('/', ViewRoute)
 app.use('/realtimeproducts', ViewRoute)
 app.use('/api/products', ProductRoute)
 app.use('/api/carts', CartRoute)
+app.use('/api/categories', CategoryRoute)
 
 
-const httpServer = app.listen(PORT, () => {
-    console.log("Servidor listo");
+const httpServer = app.listen(process.env.PORT, () => {
+    console.log(`Server listening on port ${process.env.PORT}`);
+})
+
+mongoose.connect(process.env.DB_URI, {dbName: 'CoderBackend1-Carrito'})
+.then(()=>{
+    console.log("Conectado a la Base de Datos");
+    
 })
 
 export const io = new Server(httpServer)

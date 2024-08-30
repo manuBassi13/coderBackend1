@@ -1,6 +1,5 @@
-import { log } from "node:console";
 import fs from "node:fs"
-
+import { CartModel } from "../models/cart.model.js";
 class CartManager {
     constructor(path){
         this.path = path;
@@ -16,32 +15,34 @@ class CartManager {
 
     async getCarts(){
         try{
-            const listCarts = await fs.promises.readFile(this.path, 'utf-8')  
-            console.log(listCarts);
+            const listCarts = await fs.promises.readFile(this.path, 'utf-8')
             this.carts = [...JSON.parse(listCarts).data] 
         } catch(err){
-            if (err.code === 'ENOENT'){
-                console.error('File not found: ',err.path);
-            } else {
-                console.error('Error reading file: ', err);
-            }
+            if (err.code === 'ENOENT') throw ('File not found: ',err.path)
+            else throw ('Error reading file: ', err)
         }
         return [...this.carts]
     }
 
     async createCart(products){
-        await this.getCarts()
-        console.log("Carrito: ",this.carts);
-        let id = 1
-        //Validar products
-        this.carts.length != 0 ? id = this.carts[this.carts.length-1].id +1 : id
+       //Validar products
+       console.log(products);
+       
+        const result = await CartModel.create({...products})
+        console.log(result);
+        
+        return result
+       // await this.getCarts()
+       // let id = 1
+        
+        // this.carts.length != 0 ? id = this.carts[this.carts.length-1].id +1 : id
             
-        this.carts.push({
-                id,
-                products: [...products]
-            })
+        // this.carts.push({
+        //         id,
+        //         products: [...products]
+        //     })
 
-            await fs.promises.writeFile(this.path, JSON.stringify({ data: this.carts}))
+         //   await fs.promises.writeFile(this.path, JSON.stringify({ data: this.carts}))
         
     }
 

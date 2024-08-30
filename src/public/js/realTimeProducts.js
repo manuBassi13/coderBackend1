@@ -6,7 +6,6 @@ const deleteSelect = document.querySelector('#delete-select')
 const updateProdItems = document.querySelector('#update-prod-items')
 
 const title = document.querySelector('#add-title')
-const description = document.querySelector('#add-description')
 const code = document.querySelector('#add-code')
 const price = document.querySelector('#add-price')
 const status = document.querySelector('#add-status')
@@ -15,7 +14,6 @@ const category = document.querySelector('#add-category')
 const thumbnail = document.querySelector('#add-thumbnail')
 
 let utitle = document.querySelector('#u-title')
-let udescription = document.querySelector('#u-description')
 let ucode = document.querySelector('#u-code')
 let uprice = document.querySelector('#u-price')
 let ustatus = document.querySelector('#u-status')
@@ -31,7 +29,6 @@ const socket = io()
 
 function limpiarForms(){
     title.value = ""
-    description.value = ""
     code.value = ""
     price.value = ""
     status.value = ""
@@ -39,7 +36,6 @@ function limpiarForms(){
     category.value = ""
     thumbnail.value = ""
     utitle.value = ""
-    udescription.value = ""
     ucode.value = ""
     uprice.value = ""
     ustatus.value = ""
@@ -74,7 +70,6 @@ deleteBtn.addEventListener('click', () => {
 addBtn.addEventListener('click', () => {
     newProd = {
         title: title.value,
-        description: description.value,
         code: code.value,
         price: price.value,
         status: status.value,
@@ -94,9 +89,8 @@ addBtn.addEventListener('click', () => {
 //ACTUALIZAR PRODUCTO
 updBtn.addEventListener('click', () => {
     updProd = {
-        id: updateSelect.value,
+        _id: updateSelect.value,
         title: utitle.value == '' ? utitle.placeholder : utitle.value,
-        description: udescription.value == '' ? udescription.placeholder : udescription.value,
         code: ucode.value == '' ? ucode.placeholder : ucode.value,
         price: uprice.value == '' ? uprice.placeholder : uprice.value,
         status: ustatus.value == '' ? ustatus.placeholder : ustatus.value,
@@ -109,7 +103,6 @@ updBtn.addEventListener('click', () => {
         text: "Revisa los datos:",
         html: 
         `<p>Título: `+updProd.title+`</p>`+
-        `<p>Descripción: `+updProd.description+`</p>`+
         `<p>Código: `+updProd.code+`</p>`+
         `<p>Precio: `+updProd.price+`</p>`+
         `<p>Estado: `+updProd.status+`</p>`+
@@ -139,8 +132,9 @@ updateSelect.addEventListener('change', () => {
 
 //Rellenar inputs (Actualizar Producto)
 socket.on('datos-prod', (prod) => {
+  console.log(prod);
+  
         utitle.placeholder = prod.title
-        udescription.placeholder = prod.description
         ucode.placeholder = prod.code
         uprice.placeholder = prod.price
         ustatus.placeholder = prod.status
@@ -161,8 +155,8 @@ function actualizarSelect(prodList){
     prodList.forEach(producto => {
         const opt = document.createElement('option')
         const opt2 = document.createElement('option')
-        opt.value = producto.id
-        opt2.value = producto.id
+        opt.value = producto._id
+        opt2.value = producto._id
         opt.innerText = producto.title
         opt2.innerText = producto.title
         updateSelect.appendChild(opt)
@@ -180,6 +174,6 @@ socket.on('mostrar-productos', (listaProductos) => {
     });
     limpiarForms()
     actualizarSelect(listaProductos)
-    socket.emit('traer-prod-id', listaProductos[0].id)
+    socket.emit('traer-prod-id', listaProductos[0]._id)
 })
 
