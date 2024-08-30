@@ -53,20 +53,14 @@ router.put('/:cid', async (req, res) => {
     const { cid } = req.params
     const { products } = req.body
     try{
-        
-        console.log("products-",products);
-        
         const cartFinded = await CartModel.findById(cid).lean()
-        console.log("cartfindedProd",cartFinded.products);
         
         if(!cartFinded) res.status(404).json({message: "Carrito no encontrado1"})
-            console.log("cartFinded-",cartFinded);
-            
+
         const newCart = {
             ...cartFinded,
             products
         }
-        console.log("nuevo carrito",newCart);
         
         const cartUpdated = await CartModel.findByIdAndUpdate(cid, newCart, {new: true}).populate('products.product')
 
@@ -78,6 +72,31 @@ router.put('/:cid', async (req, res) => {
     catch(e){
         res.status(404).json({message: "Carrito no encontrado2"})
     }
+})
+
+//Vaciar carrito
+router.delete('/:cid', async (req, res) => {
+    const { cid } = req.params
+    try{
+        const cartFinded = await CartModel.findById(cid).lean()
+        if(!cartFinded) res.status(404).json({message: "Carrito no encontrado"})
+
+        const newCart = {
+            ...cartFinded,
+            products: []
+        }
+        const cartUpdated = await CartModel.findByIdAndUpdate(cid, newCart, {new: true})
+
+        res.status(201).json({
+            status: "success",
+            message: "Carrito limpio",
+            cart: cartUpdated
+        })
+    }
+    catch(e) {
+        res.status(404).json({message: "Error al eliminar productos. Detalle: "+e})
+    }
+    
 })
 
 //Agregar Product PID a Cart CID
@@ -103,6 +122,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
     
 })
 
+//Actualizar cantidad de un producto en el carrito
 router.put('/:cid/product/:pid', async (req, res) => {
     const { cid, pid } = req.params
     const { quantity } = req.body
@@ -123,6 +143,31 @@ router.put('/:cid/product/:pid', async (req, res) => {
     }
     catch(e){
         res.status(404).json({message: "Carrito no encontrado2"})
+    }
+})
+
+//Eliminar producto pid del carrito cid
+router.delete('/:cid/product/:pid', async (req, res) => {
+    const { cid, pid } = req.params
+    try{
+        const cartFinded = await CartModel.findById(cid).lean()
+        if(!cartFinded) res.status(404).json({message: "Carrito no encontrado"});
+
+        const cartFiltered = {
+            ...cartFinded,
+            products: cartFinded.products.filter(prod => prod.product.toString() !== pid)
+        }
+
+        const cartUpdated = await CartModel.findByIdAndUpdate(cid, cartFiltered, {new: true}).populate('products.product')
+
+        res.status(201).json({
+            status: "success",
+            message: "Producto eliminado con éxito del carrito.",
+            cart: cartUpdated
+        })
+    }
+    catch(e){
+        res.status(404).json({message: "Error al eliminar el producto '"+pid+"' del carrito '"+cid+"'."})
     }
 
 })
