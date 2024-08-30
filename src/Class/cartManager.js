@@ -26,10 +26,7 @@ class CartManager {
 
     async createCart(products){
        //Validar products
-       console.log(products);
-       
         const result = await CartModel.create({...products})
-        console.log(result);
         
         return result
        // await this.getCarts()

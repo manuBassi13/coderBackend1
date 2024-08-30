@@ -20,7 +20,6 @@ class ProductManager {
             if(err.code === 'ENOENT') throw ('File not found: ',err.path);
             else throw ('Error reading file: ', err);
         }
-        console.log(this.productList);
         
         return this.productList
     }

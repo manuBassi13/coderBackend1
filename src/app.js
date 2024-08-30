@@ -12,30 +12,25 @@ import dotenv from "dotenv"
 
 const app = express()
 dotenv.config()
-console.log(process.env);
 
-//const PORT = 8080;
 let listaProductos = []
-//let pid = 0
+
 export const productManager = new ProductManager(__dirname + '/db/products.json')
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
-
 //MIDDLEWARES
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static(__dirname + '/public'))
-
 
 app.use('/', ViewRoute)
 app.use('/realtimeproducts', ViewRoute)
 app.use('/api/products', ProductRoute)
 app.use('/api/carts', CartRoute)
 app.use('/api/categories', CategoryRoute)
-
 
 const httpServer = app.listen(process.env.PORT, () => {
     console.log(`Server listening on port ${process.env.PORT}`);
@@ -48,8 +43,6 @@ mongoose.connect(process.env.DB_URI, {dbName: 'CoderBackend1-Carrito'})
 })
 
 export const io = new Server(httpServer)
-
-
 
 io.on('connection', async (socket) => {
     console.log("Nueva conexión:", socket.id)
